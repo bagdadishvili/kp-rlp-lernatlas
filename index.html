@@ -10,6 +10,7 @@
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="KP RLP">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +36,7 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:16px;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.6;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.6;margin:0;padding-top:env(safe-area-inset-top,0px)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
 a{color:var(--k-inn);text-underline-offset:2px}
 :focus-visible{outline:2px solid var(--ecg);outline-offset:2px;border-radius:3px}
@@ -46,7 +47,7 @@ a{color:var(--k-inn);text-underline-offset:2px}
 .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--rule);background-color:var(--surface);
   background-image:linear-gradient(var(--grid5) 1px,transparent 1px),linear-gradient(90deg,var(--grid5) 1px,transparent 1px),linear-gradient(var(--grid1) 1px,transparent 1px),linear-gradient(90deg,var(--grid1) 1px,transparent 1px);
   background-size:40px 40px,40px 40px,8px 8px,8px 8px}
-.hero-in{max-width:1240px;margin:0 auto;padding-block:calc(env(safe-area-inset-top,0px) + 36px) 28px;position:relative}
+.hero-in{max-width:1240px;margin:0 auto;padding-block:36px 28px;position:relative}
 .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ecg);display:flex;gap:8px 10px;flex-wrap:wrap;align-items:center}
 .eyebrow b{font-weight:500;background:var(--ecg-soft);padding:2px 8px;border-radius:3px}
 .hero h1{font-family:var(--f-display);font-weight:650;font-size:clamp(30px,6vw,52px);line-height:1.08;margin:12px 0 10px;text-wrap:balance;max-width:20ch}
@@ -87,7 +88,7 @@ aside{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);align-self:s
 .backup .row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .backup .row .btn{font-size:13px;min-height:38px;padding:6px 10px}
 .backup p{font-size:12.5px;color:var(--ink-2);margin:8px 0 0}
-.backup textarea{width:100%;min-height:70px;margin-top:8px;font-family:var(--f-mono);font-size:12px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);padding:8px}
+.backup textarea{width:100%;min-height:70px;margin-top:8px;font-family:var(--f-mono);font-size:16px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);padding:8px}
 .msg{font-size:12.5px;color:var(--k-chir);min-height:1em;margin-top:6px}
 nav.tocbox{overflow:auto;background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:10px 8px 10px 10px;min-height:0;-webkit-overflow-scrolling:touch}
 .toc,.toc ul{list-style:none;margin:0;padding:0}
@@ -189,13 +190,19 @@ footer{max-width:1240px;margin:0 auto;padding-block:0 calc(40px + env(safe-area-
   .topbar .t-prog{flex:1;min-width:0}
   .topbar .t-prog .prog-l{font-size:12.5px}
   .wrap{grid-template-columns:minmax(0,1fr);gap:0;padding-block:20px 80px}
-  aside{position:fixed;top:0;bottom:0;left:0;width:min(92vw,380px);max-height:none;z-index:80;background:var(--paper);
-    padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px) max(12px,env(safe-area-inset-left,0px));
-    transform:translateX(-105%);transition:transform .25s ease;box-shadow:4px 0 24px rgba(0,0,0,.2)}
-  aside.open{transform:none}
-  .drawer-head{display:flex;align-items:center;justify-content:space-between;font-weight:600}
+  html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+  .blk,.sec{scroll-margin-top:8px}
+  /* drawer: ONE scroll container (the aside itself) — reliable on iOS Safari */
+  aside{position:fixed;top:0;bottom:0;left:0;align-self:auto;height:100vh;height:100dvh;max-height:none;width:min(92vw,380px);z-index:80;background:var(--paper);
+    display:block;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    padding:0 12px calc(env(safe-area-inset-bottom,0px) + 24px) max(12px,env(safe-area-inset-left,0px));
+    transform:translateX(-105%);visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s;box-shadow:4px 0 24px rgba(0,0,0,.2)}
+  aside.open{transform:none;visibility:visible;transition:transform .25s ease}
+  aside > * + *{margin-top:12px}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;font-weight:600;position:sticky;top:0;z-index:2;background:var(--paper);padding-top:calc(env(safe-area-inset-top,0px) + 8px);padding-bottom:8px}
   .drawer-head .btn{min-height:44px;min-width:44px;justify-content:center}
-  nav.tocbox{flex:1}
+  nav.tocbox{overflow:visible;min-height:auto}
+  body.locked{position:fixed;left:0;right:0;overflow:hidden}
   .toc-h{padding:10px 6px;font-size:15px}
   .toc ul a{padding:9px 6px 9px 22px;font-size:14.5px}
   .chip{min-height:40px;font-size:14px}
@@ -207,7 +214,7 @@ footer{max-width:1240px;margin:0 auto;padding-block:0 calc(40px + env(safe-area-
   .fact .v{font-size:19px}
 }
 @media (max-width:640px){
-  .hero-in{padding-block:calc(env(safe-area-inset-top,0px) + 24px) 24px}
+  .hero-in{padding-block:24px}
   .hero p.sub{font-size:15.5px}
   ul,ol{padding-left:1.15em}
   /* tables become stacked cards */
@@ -254,7 +261,8 @@ footer{max-width:1240px;margin:0 auto;padding-block:0 calc(40px + env(safe-area-
   <aside id="drawer" aria-label="სარჩევი და ხელსაწყოები">
     <div class="drawer-head"><span>სარჩევი</span><button class="btn ghost" id="closeNav" aria-label="დახურვა">✕</button></div>
     <div class="tools">
-      <input id="q" class="search" type="search" placeholder="ძებნა: Weber, qSOFA, Colles…" aria-label="ძებნა მასალაში">
+      <input id="q" class="search" type="search" enterkeyhint="search" placeholder="ძებნა: Weber, qSOFA, Colles…" aria-label="ძებნა მასალაში">
+      <div class="msg" id="hits" hidden></div>
       <div class="filters" role="group" aria-label="ფილტრი საგნის მიხედვით">
         <button class="chip" data-f="all" aria-pressed="true">ყველა</button>
         <button class="chip" data-f="inn" aria-pressed="false">Innere</button>
@@ -3283,11 +3291,17 @@ footer{max-width:1240px;margin:0 auto;padding-block:0 calc(40px + env(safe-area-
       if(show)any=true;
     });
     document.getElementById('empty').style.display=any?'none':'block';
+    const n=blocks.filter(x=>!x.classList.contains('no-hit')&&!x.closest('.no-hit')).length;
+    const h=document.getElementById('hits');
+    if(h){h.hidden=!(term||f!=='all');h.textContent=n+' თემა'+(term?' მოიძებნა':'')+(mobile()?' — Enter ან ✕ ნახვისთვის':'');}
   }
   let t;q.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(applyFilter,150)});
+  q.addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();clearTimeout(t);applyFilter();q.blur();
+    const first=[...document.querySelectorAll('article.blk')].find(x=>!x.classList.contains('no-hit')&&!x.closest('.no-hit'));
+    if(first){if(mobile())goTo(first.id);else first.scrollIntoView({block:'start'})}});
   chips.forEach(c=>c.addEventListener('click',()=>{
     f=c.dataset.f;chips.forEach(x=>x.setAttribute('aria-pressed',x===c?'true':'false'));applyFilter();
-    if(window.matchMedia('(max-width:980px)').matches)closeNav();
+    if(mobile())closeNav();
     window.scrollTo({top:document.querySelector('.wrap').offsetTop-60});
   }));
 
@@ -3302,13 +3316,35 @@ footer{max-width:1240px;margin:0 auto;padding-block:0 calc(40px + env(safe-area-
 
   // drawer (phones)
   const drawer=document.getElementById('drawer'),shade=document.getElementById('shade'),openB=document.getElementById('openNav');
-  function openNav(){drawer.classList.add('open');shade.hidden=false;openB.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'}
-  function closeNav(){drawer.classList.remove('open');shade.hidden=true;openB.setAttribute('aria-expanded','false');document.body.style.overflow=''}
+  const mobile=()=>window.matchMedia('(max-width:980px)').matches;
+  let lockY=0;
+  const root=document.documentElement;
+  function jump(fn){const prev=root.style.scrollBehavior;root.style.scrollBehavior='auto';fn();setTimeout(()=>{root.style.scrollBehavior=prev},50)}
+  function openNav(){
+    if(drawer.classList.contains('open'))return;
+    lockY=window.scrollY;document.body.style.top=(-lockY)+'px';document.body.classList.add('locked');
+    drawer.classList.add('open');shade.hidden=false;openB.setAttribute('aria-expanded','true');
+    const act=drawer.querySelector('nav a.active');if(act)act.scrollIntoView({block:'center'});
+  }
+  function closeNav(){
+    if(!drawer.classList.contains('open'))return;
+    drawer.classList.remove('open');shade.hidden=true;openB.setAttribute('aria-expanded','false');
+    document.body.classList.remove('locked');document.body.style.top='';jump(()=>window.scrollTo(0,lockY));
+  }
+  function goTo(id){
+    const el=document.getElementById(id);if(!el)return;
+    closeNav();
+    jump(()=>el.scrollIntoView({block:'start'}));try{history.replaceState(null,'','#'+id)}catch(e){}
+  }
   openB.addEventListener('click',openNav);
   document.getElementById('closeNav').addEventListener('click',closeNav);
   shade.addEventListener('click',closeNav);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNav()});
-  document.querySelectorAll('nav.tocbox a').forEach(a=>a.addEventListener('click',()=>{if(window.matchMedia('(max-width:980px)').matches)closeNav()}));
+  window.addEventListener('resize',()=>{if(!mobile())closeNav()});
+  document.querySelectorAll('nav.tocbox a').forEach(a=>a.addEventListener('click',e=>{
+    if(!mobile())return; e.preventDefault(); goTo(a.getAttribute('href').slice(1));
+  }));
+  document.getElementById('resumeBtn').addEventListener('click',e=>{e.preventDefault();goTo(e.currentTarget.getAttribute('href').slice(1))});
 
   // active TOC + remember last topic
   const links=[...document.querySelectorAll('nav.tocbox a')];
